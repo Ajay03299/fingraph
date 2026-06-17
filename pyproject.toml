@@ -1,0 +1,38 @@
+[project]
+name = "FinGraph"
+version = "0.1.0"
+description = "A graph-based financial intelligence system for detecting and explaining suspicious transaction patterns."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "networkx>=3.0",
+    "scikit-learn>=1.3",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+api = ["fastapi>=0.110", "uvicorn>=0.29"]
+dashboard = ["streamlit>=1.30", "plotly>=5.0"]
+dev = ["pytest>=8.0", "ruff>=0.4", "pre-commit>=3.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fingraph"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+# A sensible, not-annoying starter set: pyflakes, pycodestyle, isort, bugbear, pyupgrade.
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
