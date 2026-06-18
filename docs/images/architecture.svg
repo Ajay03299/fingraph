@@ -1,0 +1,100 @@
+<svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .stage { fill: #0f172a; stroke: #334155; stroke-width: 1.5; rx: 10; }
+      .stage-accent { fill: #1e293b; stroke: #3b82f6; stroke-width: 2; rx: 10; }
+      .title { fill: #f1f5f9; font-size: 15px; font-weight: 600; }
+      .sub { fill: #94a3b8; font-size: 11.5px; }
+      .flow { stroke: #64748b; stroke-width: 1.6; fill: none; }
+      .layer { fill: #e2e8f0; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+      .serve { fill: #052e1c; stroke: #10b981; stroke-width: 2; rx: 10; }
+      .serve-title { fill: #d1fae5; font-size: 14px; font-weight: 600; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="900" height="520" fill="#020617"/>
+  <text x="40" y="44" fill="#f8fafc" font-size="22" font-weight="700">FinGraph — Pipeline Architecture</text>
+  <text x="40" y="68" class="sub" font-size="13">Transactions become a graph; the graph is scored, the scores are explained, and the explanations are served.</text>
+
+  <!-- CORE PIPELINE LABEL -->
+  <text x="40" y="108" class="layer">CORE PIPELINE</text>
+
+  <!-- Row of pipeline stages -->
+  <!-- 1 Data -->
+  <rect x="40" y="120" width="150" height="74" class="stage" rx="10"/>
+  <text x="56" y="148" class="title">Data</text>
+  <text x="56" y="168" class="sub">Synthetic generator</text>
+  <text x="56" y="184" class="sub">planted typologies</text>
+
+  <!-- 2 Graph -->
+  <rect x="226" y="120" width="150" height="74" class="stage" rx="10"/>
+  <text x="242" y="148" class="title">Graph</text>
+  <text x="242" y="168" class="sub">NetworkX MultiDiGraph</text>
+  <text x="242" y="184" class="sub">accounts · transfers</text>
+
+  <!-- 3 Features -->
+  <rect x="412" y="120" width="150" height="74" class="stage" rx="10"/>
+  <text x="428" y="148" class="title">Features</text>
+  <text x="428" y="168" class="sub">fan-in · cycles</text>
+  <text x="428" y="184" class="sub">velocity · volume</text>
+
+  <!-- 4 Detection -->
+  <rect x="598" y="120" width="150" height="74" class="stage" rx="10"/>
+  <text x="614" y="148" class="title">Detection</text>
+  <text x="614" y="168" class="sub">IsolationForest</text>
+  <text x="614" y="184" class="sub">anomaly score</text>
+
+  <!-- arrows row 1 -->
+  <line x1="190" y1="157" x2="222" y2="157" class="flow" marker-end="url(#arrow)"/>
+  <line x1="376" y1="157" x2="408" y2="157" class="flow" marker-end="url(#arrow)"/>
+  <line x1="562" y1="157" x2="594" y2="157" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- elbow from detection down to scoring -->
+  <path d="M673 194 L673 230" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- Row 2: scoring + explain (accent = the differentiators) -->
+  <!-- 5 Scoring -->
+  <rect x="598" y="232" width="150" height="78" class="stage-accent" rx="10"/>
+  <text x="614" y="260" class="title">Graph-aware scoring</text>
+  <text x="614" y="280" class="sub">risk propagation</text>
+  <text x="614" y="296" class="sub">blended risk score</text>
+
+  <!-- 6 Explain -->
+  <rect x="412" y="232" width="150" height="78" class="stage-accent" rx="10"/>
+  <text x="428" y="260" class="title">Explainability</text>
+  <text x="428" y="280" class="sub">reason codes</text>
+  <text x="428" y="296" class="sub">investigator note</text>
+
+  <!-- arrow scoring -> explain (right to left) -->
+  <line x1="594" y1="271" x2="566" y2="271" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- elbow from explain down to serve -->
+  <path d="M487 310 L487 356" class="flow" marker-end="url(#arrow)"/>
+
+  <!-- SERVE LABEL -->
+  <text x="40" y="344" class="layer">SERVING</text>
+
+  <!-- Serve row -->
+  <rect x="330" y="358" width="150" height="70" class="serve" rx="10"/>
+  <text x="346" y="386" class="serve-title">FastAPI</text>
+  <text x="346" y="406" class="sub">REST: alerts · accounts</text>
+
+  <rect x="498" y="358" width="170" height="70" class="serve" rx="10"/>
+  <text x="514" y="386" class="serve-title">Streamlit dashboard</text>
+  <text x="514" y="406" class="sub">queue · case notes · graph</text>
+
+  <!-- both read from the same Pipeline object -->
+  <path d="M405 428 L405 452" class="flow" marker-end="url(#arrow)"/>
+  <path d="M583 428 L583 452" class="flow" marker-end="url(#arrow)"/>
+  <rect x="290" y="454" width="418" height="40" fill="#0f172a" stroke="#475569" stroke-width="1.5" rx="8"/>
+  <text x="499" y="479" text-anchor="middle" class="sub" font-size="12">One in-memory Pipeline, built once &#8212; both surfaces are thin readers</text>
+
+  <!-- ground truth side note -->
+  <rect x="40" y="232" width="330" height="78" fill="#0f172a" stroke="#475569" stroke-width="1.2" stroke-dasharray="4 3" rx="10"/>
+  <text x="56" y="258" class="title" font-size="13">Evaluation (held aside)</text>
+  <text x="56" y="278" class="sub">Planted patterns give ground-truth labels —</text>
+  <text x="56" y="294" class="sub">used only to score the model: ROC-AUC, AP, precision@k</text>
+</svg>
