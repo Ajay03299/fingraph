@@ -77,8 +77,11 @@ def explain_account(
             Reason(
                 code="RISKY_COUNTERPARTIES",
                 severity=severity,
-                detail=f"Transacts with {len(dirty_neighbours)} already high-risk "
-                "account(s), so risk propagates through these relationships.",
+                detail=(
+                    f"Transacts with {len(dirty_neighbours)} already high-risk "
+                    f"{'account' if len(dirty_neighbours) == 1 else 'accounts'}, "
+                    "so risk propagates through these relationships."
+                ),
             )
         )
 
