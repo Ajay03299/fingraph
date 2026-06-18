@@ -13,7 +13,8 @@ from __future__ import annotations
 import networkx as nx
 import pandas as pd
 
-from fingraph.data.generator import GeneratorConfig, generate_dataset
+from fingraph.data.generator import GeneratorConfig
+from fingraph.data.sources import DataSource, SyntheticSource
 from fingraph.detection.evaluate import account_labels, evaluate
 from fingraph.detection.model import AnomalyDetector
 from fingraph.explain.investigate import Investigation, investigate
@@ -29,8 +30,20 @@ class Pipeline:
     cheap reads against the cached scores and graph.
     """
 
-    def __init__(self, config: GeneratorConfig | None = None):
-        self.config = config or GeneratorConfig()
+    def __init__(
+        self,
+        source: DataSource | GeneratorConfig | None = None,
+        config: GeneratorConfig | None = None,
+    ):
+        # Backwards compatibility: older callers do Pipeline(config) positionally.
+        # If the first argument is a GeneratorConfig, treat it as the config.
+        if isinstance(source, GeneratorConfig):
+            config = source
+            source = None
+        self.source = source or SyntheticSource(config)
+        self.config = config
+        self.source = source or SyntheticSource(config)
+        self.config = config
         self.accounts: pd.DataFrame | None = None
         self.transactions: pd.DataFrame | None = None
         self.graph: nx.MultiDiGraph | None = None
@@ -39,7 +52,7 @@ class Pipeline:
         self.labels: pd.Series | None = None
 
     def build(self) -> Pipeline:
-        self.accounts, self.transactions = generate_dataset(self.config)
+        self.accounts, self.transactions = self.source.load()
         self.graph = build_transaction_graph(self.transactions, self.accounts)
         self.features = compute_account_features(self.graph)
 

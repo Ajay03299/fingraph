@@ -25,13 +25,12 @@ def build_transaction_graph(
     graph = nx.MultiDiGraph()
 
     if accounts is not None:
+        # Only attach metadata columns that are present. The synthetic source
+        # supplies rich attributes; the IBM benchmark supplies only account_id.
+        metadata_cols = [c for c in accounts.columns if c != "account_id"]
         for row in accounts.itertuples(index=False):
-            graph.add_node(
-                row.account_id,
-                account_type=row.account_type,
-                country=row.country,
-                opened_at=row.opened_at,
-            )
+            attrs = {col: getattr(row, col) for col in metadata_cols}
+            graph.add_node(row.account_id, **attrs)
 
     for tx in transactions.itertuples(index=False):
         # add_edge silently creates either endpoint if it doesn't exist yet,

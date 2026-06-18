@@ -17,6 +17,7 @@ from __future__ import annotations
 import networkx as nx
 import numpy as np
 import pandas as pd
+from scipy import sparse
 
 
 def propagate_risk(
@@ -28,12 +29,17 @@ def propagate_risk(
 ) -> pd.Series:
     """Diffuse seed risk scores across the transaction graph.
 
+    Risk flows along money: each step, an account keeps a fraction of its own
+    seed and absorbs a share of its neighbours' current risk, weighted by flow.
+    Built on a sparse transition matrix so it scales to graphs with hundreds of
+    thousands of accounts — a dense matrix would need O(n^2) memory and fall
+    over on real-world data.
+
     Args:
         graph: the transaction multigraph.
         seed_scores: per-account anomaly scores in [0, 1] to seed from.
-        damping: weight kept on an account's own seed each step. Higher means
-            more self-reliant; lower lets neighbours pull harder. 0.85 is the
-            classic PageRank value and behaves well here.
+        damping: weight kept on an account's own seed each step (0.85 is the
+            classic PageRank value and behaves well here).
         iterations: hard cap on diffusion steps.
         tolerance: stop early once scores stop moving meaningfully.
 
@@ -46,18 +52,23 @@ def propagate_risk(
 
     seed = np.array([seed_scores.get(node, 0.0) for node in nodes], dtype=float)
 
-    # Build a row-normalised neighbour-influence matrix from money flow. We
-    # treat the graph as undirected for influence: laundering risk is guilt by
-    # association in both directions, not just downstream.
-    weights = np.zeros((n, n), dtype=float)
-    for u, v, data in graph.edges(data=True):
+    # Accumulate money flow as sparse coordinates. We treat influence as
+    # undirected — laundering risk is guilt by association in both directions.
+    rows, cols, data = [], [], []
+    for u, v, attrs in graph.edges(data=True):
         i, j = index[u], index[v]
-        weights[i, j] += data["amount"]
-        weights[j, i] += data["amount"]
+        amount = attrs["amount"]
+        rows += [i, j]
+        cols += [j, i]
+        data += [amount, amount]
 
-    row_sums = weights.sum(axis=1, keepdims=True)
+    weights = sparse.csr_matrix((data, (rows, cols)), shape=(n, n))
+
+    # Row-normalise so each account's incoming influence sums to 1.
+    row_sums = np.asarray(weights.sum(axis=1)).flatten()
     row_sums[row_sums == 0] = 1.0  # isolated accounts keep only their own seed
-    transition = weights / row_sums
+    inv = sparse.diags(1.0 / row_sums)
+    transition = inv @ weights
 
     scores = seed.copy()
     for _ in range(iterations):

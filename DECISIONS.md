@@ -17,6 +17,16 @@ pipeline on a public AML benchmark at realistic base rates, and reports how
 metrics degrade as fraud becomes rarer. Reported numbers use a fixed seed so they
 are reproducible.
 
+## On rarity stress testing
+
+A rarity sweep (varying the fraud base rate) was prototyped but removed: the
+300k-row benchmark sample doesn't contain enough clean accounts to dilute the
+dirty-account rate below its natural ~3%, so the sweep couldn't produce a
+meaningful curve without a much larger sample and the associated memory cost.
+The real-benchmark result already serves the core purpose — validating the
+pipeline on data it didn't generate. A proper rarity study on a larger sample
+is noted as future work.
+
 ## Why IsolationForest for detection
 
 The detection layer is unsupervised, mirroring reality where clean fraud labels
