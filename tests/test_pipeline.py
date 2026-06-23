@@ -1,6 +1,7 @@
 """Tests for the analysis pipeline."""
 
 import pytest
+
 from fingraph.data.generator import GeneratorConfig
 from fingraph.pipeline import Pipeline
 

@@ -6,6 +6,7 @@ reuse this instead of each building their own.
 """
 
 import pytest
+
 from fingraph.data.generator import GeneratorConfig
 from fingraph.pipeline import Pipeline
 

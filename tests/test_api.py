@@ -1,6 +1,7 @@
 """Tests for the FastAPI service, exercised through FastAPI's TestClient."""
 
 from fastapi.testclient import TestClient
+
 from fingraph.api.app import app
 
 

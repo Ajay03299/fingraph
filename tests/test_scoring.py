@@ -1,6 +1,7 @@
 """Tests for graph-aware risk propagation and score blending."""
 
 import pandas as pd
+
 from fingraph.data.generator import GeneratorConfig, generate_dataset
 from fingraph.detection.evaluate import account_labels, evaluate
 from fingraph.detection.model import AnomalyDetector

@@ -1,6 +1,7 @@
 """Tests for transaction graph construction."""
 
 import networkx as nx
+
 from fingraph.data.generator import GeneratorConfig, generate_dataset
 from fingraph.graph.build import build_transaction_graph
 

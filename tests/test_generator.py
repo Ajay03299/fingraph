@@ -1,6 +1,7 @@
 """Tests for the synthetic data generator."""
 
 import pandas as pd
+
 from fingraph.data.generator import GeneratorConfig, generate_dataset
 
 
