@@ -1,5 +1,9 @@
 # FinGraph
 
+![CI](https://github.com/Ajay13299/fingraph/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 **Graph-based detection and explanation of suspicious financial activity.**
 
 FinGraph models transactions as a graph, scores every account for money-laundering
@@ -39,6 +43,17 @@ Propagating risk along the transaction graph improves ranking quality over a
 standalone anomaly detector — the lift comes from catching pass-through accounts
 whose own features look ordinary but whose *company* is suspicious.
 
+### On a real public benchmark
+
+Validated on the [IBM Anti-Money-Laundering benchmark](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml)
+(HI-Small, ~300k transactions, ~202k accounts): **ROC-AUC 0.60**. The drop from
+the synthetic score is expected and honest — the synthetic data is built around
+the specific structural typologies FinGraph's features target, while the IBM
+generator models many laundering patterns that hand-engineered structural
+features only partially capture. This gap motivates a learned graph model (see
+roadmap), and validating on data FinGraph didn't generate is what makes the
+synthetic results trustworthy rather than circular.
+
 ## How it works
 
 ![Architecture](docs/images/architecture.svg)
@@ -70,10 +85,17 @@ heavy fan-in:
 ## Quickstart
 
 ```bash
-git clone https://github.com/<you>/fingraph.git
+git clone https://github.com/Ajay13299/fingraph.git
 cd fingraph
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,api,dashboard]"
+```
+
+### Or run with Docker
+```bash
+docker build -t fingraph .
+docker run -p 8501:8501 fingraph
+# dashboard at http://localhost:8501
 ```
 
 ### Run the dashboard
@@ -115,10 +137,13 @@ propagation, how thresholds are calibrated — are documented in
 
 ## Roadmap
 
-- Validation on a public AML benchmark (IBM AMLSim) at realistic fraud rates.
-- Robustness study across base rates from 0.1% to 5%.
-- Optional GraphSAGE (GNN) branch, benchmarked against propagation.
-- Containerised one-command demo and CI.
+- **Learned graph model (GraphSAGE/GNN)** — to close the gap between
+  hand-engineered structural features and the broader set of real laundering
+  typologies, benchmarked against the current propagation approach.
+- **Temporal features** — rolling-window velocity and inter-transaction timing,
+  since laundering is fundamentally a time-based behaviour.
+- **Larger-scale rarity study** on the full benchmark, varying base rate with
+  enough clean accounts to produce a clean degradation curve.
 
 ## Tech stack
 
