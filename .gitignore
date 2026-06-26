@@ -12,7 +12,7 @@ venv/
 env/
 
 # Generated data and artifacts
-data/
+/data/
 *.pkl
 *.joblib
 
