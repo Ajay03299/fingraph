@@ -33,6 +33,9 @@ target-version = "py310"
 # A sensible, not-annoying starter set: pyflakes, pycodestyle, isort, bugbear, pyupgrade.
 select = ["E", "F", "I", "B", "UP"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["fingraph"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
